@@ -1,0 +1,25 @@
+{
+  "name": "Household App Development Environment",
+  "dockerFile": "../Dockerfile", // 使用する Dockerfile を指定
+  "appPort": [5173], // アプリのポート番号
+  "workspaceFolder": "/home/household-app",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "dbaeumer.vscode-eslint", // 例: ESLint 拡張
+        "formulahendry.auto-close-tag",
+        "formulahendry.auto-rename-tag",
+        "dsznajder.es7-react-js-snippets",
+        "oderwat.indent-rainbow",
+        "esbenp.prettier-vscode",
+        "mosapride.zenkaku",
+        "ms-ceintl.vscode-language-pack-ja"
+      ],
+      "settings": {
+        "terminal.integrated.shell.linux": "/bin/bash"
+      }
+    }
+  },
+  "postCreateCommand": "npm install", // コンテナ作成後に実行するコマンド
+  "remoteUser": "node" // コンテナ内の作業ユーザー（必要に応じて変更）
+}

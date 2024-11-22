@@ -51,8 +51,8 @@ export default function AppLayout() {
       <AppBar
         position="fixed"
         sx={{
-          width: { sm: `calc(100% - ${drawerWidth}px)` },
-          ml: { sm: `${drawerWidth}px` },
+          width: { md: `calc(100% - ${drawerWidth}px)` },
+          ml: { md: `${drawerWidth}px` },
         }}
       >
         <Toolbar>
@@ -61,18 +61,24 @@ export default function AppLayout() {
             aria-label="open drawer"
             edge="start"
             onClick={handleDrawerToggle}
-            sx={{ mr: 2, display: { sm: "none" } }}
+            sx={{ mr: 2, display: { md: "none" } }}
           >
             <MenuIcon />
           </IconButton>
           <Typography variant="h6" noWrap component="div">
-            Responsive drawer
+            TypeScript × React 家計簿アプリ
           </Typography>
         </Toolbar>
       </AppBar>
 
       {/* サイドバー */}
-      <SideBar drawerWidth={drawerWidth} mobileOpen={mobileOpen} handleDrawerToggle={handleDrawerToggle} />
+      <SideBar
+        drawerWidth={drawerWidth}
+        mobileOpen={mobileOpen}
+        handleDrawerToggle={handleDrawerToggle}
+        handleDrawerTransitionEnd={handleDrawerTransitionEnd}
+        handleDrawerClose={handleDrawerClose}
+      />
 
       {/* メインコンテンツ */}
       <Box
@@ -80,7 +86,7 @@ export default function AppLayout() {
         sx={{
           flexGrow: 1,
           p: 3,
-          width: { sm: `calc(100% - ${drawerWidth}px)` },
+          width: { md: `calc(100% - ${drawerWidth}px)` },
         }}
       >
         <Toolbar />
