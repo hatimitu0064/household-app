@@ -7,16 +7,21 @@ import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFnsV3";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { ja } from "date-fns/locale";
 import { addMonths } from "date-fns";
+import { useAppContext } from "../context/AppContext";
 
-interface MonthSelectorProps {
-  currentMonth: Date;
-  setCurrentMonth: React.Dispatch<React.SetStateAction<Date>>;
-}
+// interface MonthSelectorProps {
+//   currentMonth: Date;
+//   setCurrentMonth: React.Dispatch<React.SetStateAction<Date>>;
+// }
 
-const MonthSelector = ({
-  currentMonth,
-  setCurrentMonth,
-}: MonthSelectorProps) => {
+const MonthSelector = (
+	// {
+  // currentMonth,
+  // setCurrentMonth,
+	// }: MonthSelectorProps
+) => {
+	const {currentMonth, setCurrentMonth} = useAppContext()
+
   const handleDateChange = (newDate: Date | null) => {
     console.log(newDate);
     if (newDate) {

@@ -10,23 +10,29 @@ import { formatCurrency } from "../utils/formatting";
 import interactionPlugin, { DateClickArg } from "@fullcalendar/interaction";
 import { useTheme } from "@mui/material";
 import { isSameDay, isSameMonth } from "date-fns";
+import useMonthlyTransactions from "../hooks/useMonthlyTransactions";
+import { useAppContext } from "../context/AppContext";
 
 interface CalendarProps {
-  monthlyTransactions: Transaction[];
-  setCurrentMonth: React.Dispatch<React.SetStateAction<Date>>;
+  // monthlyTransactions: Transaction[];
+  // setCurrentMonth: React.Dispatch<React.SetStateAction<Date>>;
   setCurrentDay: React.Dispatch<React.SetStateAction<string>>;
   currentDay: string;
   today: string;
+  onDateClick: (dateInfo: DateClickArg) => void;
 }
 
 const Calendar = ({
-  monthlyTransactions,
-  setCurrentMonth,
+  // monthlyTransactions,
+  // setCurrentMonth,
   setCurrentDay,
   currentDay,
   today,
+  onDateClick,
 }: CalendarProps) => {
   const theme = useTheme();
+  const monthlyTransactions = useMonthlyTransactions();
+  const { setCurrentMonth } = useAppContext();
 
   const dailyBalances = calculateDailyBalances(monthlyTransactions);
   // console.log(dailyBalances);
@@ -88,11 +94,6 @@ const Calendar = ({
     }
   };
 
-  const handleDateClick = (dateInfo: DateClickArg) => {
-    console.log(dateInfo);
-    setCurrentDay(dateInfo.dateStr);
-  };
-
   return (
     <FullCalendar
       locale={jaLocale}
@@ -101,7 +102,7 @@ const Calendar = ({
       events={[...calendarEvents, backgroundEvent]}
       eventContent={renderEventContent}
       datesSet={handleDateSet}
-      dateClick={handleDateClick}
+      dateClick={onDateClick}
     />
   );
 };

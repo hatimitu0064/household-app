@@ -5,16 +5,21 @@ import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
 import AccountBalanceIcon from "@mui/icons-material/AccountBalance";
 import { Transaction } from "../types";
 import { financeCalculations } from "../utils/financeCalculations";
+import { formatCurrency } from "../utils/formatting";
+import useMonthlyTransactions from "../hooks/useMonthlyTransactions";
 
-interface MonthlySummaryProps {
-	monthlyTransactions: Transaction[],
-}
 
-const MonthlySummary = ({monthlyTransactions}: MonthlySummaryProps) => {
-	// console.log(monthlyTransactions)
+// interface MonthlySummaryProps {
+//   monthlyTransactions: Transaction[];
+// }
 
-	const {income, expense, balance} = financeCalculations(monthlyTransactions);
-	// console.log(monthlyTotals)
+const MonthlySummary = (
+	// { monthlyTransactions }: MonthlySummaryProps
+) => {
+	const monthlyTransactions = useMonthlyTransactions()
+
+  const { income, expense, balance } = financeCalculations(monthlyTransactions);
+  // console.log(monthlyTotals)
 
   return (
     <Grid container spacing={{ xs: 1, sm: 2 }} mb={2}>
@@ -42,7 +47,7 @@ const MonthlySummary = ({monthlyTransactions}: MonthlySummaryProps) => {
                 fontSize: { xs: ".8rem", sm: "1rem", md: "1.2rem" },
               }}
             >
-              ￥{income}
+              ￥{formatCurrency(income)}
             </Typography>
           </CardContent>
         </Card>
@@ -72,7 +77,7 @@ const MonthlySummary = ({monthlyTransactions}: MonthlySummaryProps) => {
                 fontSize: { xs: ".8rem", sm: "1rem", md: "1.2rem" },
               }}
             >
-              ￥{expense}
+              ￥{formatCurrency(expense)}
             </Typography>
           </CardContent>
         </Card>
@@ -102,7 +107,7 @@ const MonthlySummary = ({monthlyTransactions}: MonthlySummaryProps) => {
                 fontSize: { xs: ".8rem", sm: "1rem", md: "1.2rem" },
               }}
             >
-              ￥{balance}
+              ￥{formatCurrency(balance)}
             </Typography>
           </CardContent>
         </Card>

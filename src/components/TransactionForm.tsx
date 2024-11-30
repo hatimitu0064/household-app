@@ -2,14 +2,20 @@ import {
   Box,
   Button,
   ButtonGroup,
+  Dialog,
+  DialogContent,
+  FormControl,
+  FormHelperText,
   IconButton,
+  InputLabel,
   ListItemIcon,
   MenuItem,
+  Select,
   Stack,
   TextField,
   Typography,
 } from "@mui/material";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import CloseIcon from "@mui/icons-material/Close"; // 閉じるボタン用のアイコン
 import FastfoodIcon from "@mui/icons-material/Fastfood"; //食事アイコン
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
@@ -26,21 +32,27 @@ import SavingsIcon from "@mui/icons-material/Savings";
 import AddBusinessIcon from "@mui/icons-material/AddBusiness";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Schema, transactionSchema } from "../validations/schema";
+import { AppContext, useAppContext } from "../context/AppContext";
 
 interface TransactionFormProps {
   onCloseForm: () => void;
   isEntryDrawerOpen: boolean;
   currentDay: string;
-  onSaveTransaction: (transaction: Schema) => Promise<void>;
+  // onSaveTransaction: (transaction: Schema) => Promise<void>;
   selectedTransaction: Transaction | null;
-  onDeleteTransaction: (transactionId: string) => Promise<void>;
+  // onDeleteTransaction: (
+  //   transactionId: string | readonly string[]
+  // ) => Promise<void>;
   setSelectedTransaction: React.Dispatch<
     React.SetStateAction<Transaction | null>
   >;
-  onUpdateTransaction: (
-    transaction: Schema,
-    transactionId: string
-  ) => Promise<void>;
+  // onUpdateTransaction: (
+  //   transaction: Schema,
+  //   transactionId: string
+  // ) => Promise<void>;
+  // isMobile: boolean;
+  isDialogOpen: boolean;
+  setIsDialogOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 type IncomeExpense = "income" | "expense";
@@ -54,12 +66,22 @@ const TransactionForm = ({
   onCloseForm,
   isEntryDrawerOpen,
   currentDay,
-  onSaveTransaction,
+  // onSaveTransaction,
   selectedTransaction,
-  onDeleteTransaction,
+  // onDeleteTransaction,
   setSelectedTransaction,
-  onUpdateTransaction,
+  // onUpdateTransaction,
+  // isMobile,
+  isDialogOpen,
+  setIsDialogOpen,
 }: TransactionFormProps) => {
+  const {
+    isMobile,
+    onSaveTransaction,
+    onDeleteTransaction,
+    onUpdateTransaction,
+  } = useAppContext();
+
   const formWidth = 320;
 
   const expenseCategories: CategoryItem[] = [
@@ -128,6 +150,9 @@ const TransactionForm = ({
         .then(() => {
           // console.log("更新しました。");
           setSelectedTransaction(null);
+          if (isMobile) {
+            setIsDialogOpen(false);
+          }
         })
         .catch((error) => {
           console.error(error);
@@ -173,33 +198,19 @@ const TransactionForm = ({
     }
   }, [selectedTransaction]);
 
+  //削除処理
   const handleDelete = () => {
     if (selectedTransaction) {
       onDeleteTransaction(selectedTransaction.id);
+      if (isMobile) {
+        setIsDialogOpen(false);
+      }
       setSelectedTransaction(null);
     }
   };
 
-  return (
-    <Box
-      sx={{
-        position: "fixed",
-        top: 64,
-        right: isEntryDrawerOpen ? formWidth : "-2%", // フォームの位置を調整
-        width: formWidth,
-        height: "100%",
-        bgcolor: "background.paper",
-        zIndex: (theme) => theme.zIndex.drawer - 1,
-        transition: (theme) =>
-          theme.transitions.create("right", {
-            easing: theme.transitions.easing.sharp,
-            duration: theme.transitions.duration.enteringScreen,
-          }),
-        p: 2, // 内部の余白
-        boxSizing: "border-box", // ボーダーとパディングをwidthに含める
-        boxShadow: "0px 0px 15px -5px #777777",
-      }}
-    >
+  const formContent = (
+    <>
       {/* 入力エリアヘッダー */}
       <Box display={"flex"} justifyContent={"space-between"} mb={2}>
         <Typography variant="h6">入力</Typography>
@@ -262,21 +273,40 @@ const TransactionForm = ({
             name="category"
             control={control}
             render={({ field }) => (
-              <TextField
-                error={!!errors.category}
-                helperText={errors.date?.message}
-                {...field}
-                id="カテゴリ"
-                label="カテゴリ"
-                select
-              >
-                {categories.map((category, index) => (
-                  <MenuItem value={category.label} key={index}>
-                    <ListItemIcon>{category.icon}</ListItemIcon>
-                    {category.label}
-                  </MenuItem>
-                ))}
-              </TextField>
+              // <TextField
+              //   {...field}
+              //   error={!!errors.category}
+              //   helperText={errors.date?.message}
+              //   InputLabelProps={{
+              //     htmlFor: "category",
+              //   }}
+              //   inputProps={{ id: "category" }}
+              // >
+              //   {categories.map((category, index) => (
+              //     <MenuItem value={category.label} key={index}>
+              //       <ListItemIcon>{category.icon}</ListItemIcon>
+              //       {category.label}
+              //     </MenuItem>
+              //   ))}
+              // </TextField>
+
+              <FormControl fullWidth error={!!errors.category}>
+                <InputLabel id="category-select-label">カテゴリ</InputLabel>
+                <Select
+                  {...field}
+                  labelId="category-select-label"
+                  id="category-select"
+                  label="カテゴリ"
+                >
+                  {categories.map((category, index) => (
+                    <MenuItem value={category.label} key={index}>
+                      <ListItemIcon>{category.icon}</ListItemIcon>
+                      {category.label}
+                    </MenuItem>
+                  ))}
+                </Select>
+                <FormHelperText>{errors.category?.message}</FormHelperText>
+              </FormControl>
             )}
           />
           {/* 金額 */}
@@ -335,7 +365,46 @@ const TransactionForm = ({
           )}
         </Stack>
       </Box>
-    </Box>
+    </>
+  );
+
+  return (
+    <>
+      {isMobile ? (
+        //mobile
+        <Dialog
+          open={isDialogOpen}
+          onClose={onCloseForm}
+          fullWidth
+          maxWidth={"sm"}
+        >
+          <DialogContent>{formContent}</DialogContent>
+        </Dialog>
+      ) : (
+        //PC
+        <Box
+          sx={{
+            position: "fixed",
+            top: 64,
+            right: isEntryDrawerOpen ? formWidth : "-2%", // フォームの位置を調整
+            width: formWidth,
+            height: "100%",
+            bgcolor: "background.paper",
+            zIndex: (theme) => theme.zIndex.drawer - 1,
+            transition: (theme) =>
+              theme.transitions.create("right", {
+                easing: theme.transitions.easing.sharp,
+                duration: theme.transitions.duration.enteringScreen,
+              }),
+            p: 2, // 内部の余白
+            boxSizing: "border-box", // ボーダーとパディングをwidthに含める
+            boxShadow: "0px 0px 15px -5px #777777",
+          }}
+        >
+          {formContent}
+        </Box>
+      )}
+    </>
   );
 };
 export default TransactionForm;
