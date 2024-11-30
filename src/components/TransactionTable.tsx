@@ -20,8 +20,8 @@ import { Grid } from "@mui/material";
 import { formatCurrency } from "../utils/formatting";
 import IconComponents from "./common/IconComponents";
 import { compareDesc, parseISO } from "date-fns";
-import { useAppContext } from "../context/AppContext";
 import useMonthlyTransactions from "../hooks/useMonthlyTransactions";
+import { useAppContext } from "../context/AppContext";
 
 interface TransactionTableHeadProps {
   numSelected: number;
@@ -65,21 +65,20 @@ interface TransactionTableToolbarProps {
 // ツールバー
 function TransactionTableToolbar(props: TransactionTableToolbarProps) {
   const { numSelected, onDelete } = props;
+
   return (
     <Toolbar
-      sx={[
-        {
-          pl: { sm: 2 },
-          pr: { xs: 1, sm: 1 },
-        },
-        numSelected > 0 && {
+      sx={{
+        pl: { sm: 2 },
+        pr: { xs: 1, sm: 1 },
+        ...(numSelected > 0 && {
           bgcolor: (theme) =>
             alpha(
               theme.palette.primary.main,
               theme.palette.action.activatedOpacity
             ),
-        },
-      ]}
+        }),
+      }}
     >
       {numSelected > 0 ? (
         <Typography
@@ -97,7 +96,7 @@ function TransactionTableToolbar(props: TransactionTableToolbarProps) {
           id="tableTitle"
           component="div"
         >
-          月の収支
+          月間の取引一覧
         </Typography>
       )}
       {numSelected > 0 && (
@@ -116,7 +115,7 @@ interface FinancialItemProps {
   value: number;
   color: string;
 }
-
+//収支表示コンポーネント
 function FinancialItem({ title, value, color }: FinancialItemProps) {
   return (
     <Grid item xs={4} textAlign={"center"}>
@@ -138,19 +137,10 @@ function FinancialItem({ title, value, color }: FinancialItemProps) {
   );
 }
 
-// interface TransactionTableProps {
-//   monthlyTransactions: Transaction[];
-//   onDeleteTransaction: (transactionId: string | readonly string[]) => Promise<void>;
-// }
-
-// 本体
+//本体
 export default function TransactionTable() {
-  // {
-  // monthlyTransactions,
-  // onDeleteTransaction,
-  // }: TransactionTableProps
-  const { onDeleteTransaction } = useAppContext();
   const monthlyTransactions = useMonthlyTransactions();
+  const { onDeleteTransaction } = useAppContext();
 
   const theme = useTheme();
   const [selected, setSelected] = React.useState<readonly string[]>([]);
@@ -159,7 +149,7 @@ export default function TransactionTable() {
 
   const handleSelectAllClick = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.checked) {
-      const newSelected = rows.map((n) => n.id);
+      const newSelected = monthlyTransactions.map((n) => n.id);
       setSelected(newSelected);
       return;
     }
@@ -168,7 +158,7 @@ export default function TransactionTable() {
 
   const handleClick = (event: React.MouseEvent<unknown>, id: string) => {
     const selectedIndex = selected.indexOf(id);
-    let newSelected: readonly number[] = [];
+    let newSelected: readonly string[] = [];
 
     if (selectedIndex === -1) {
       newSelected = newSelected.concat(selected, id);
@@ -196,11 +186,13 @@ export default function TransactionTable() {
     setPage(0);
   };
 
-  console.log(selected);
+  //削除処理
   const handleDelete = () => {
     onDeleteTransaction(selected);
     setSelected([]);
   };
+
+  const isSelected = (id: string) => selected.indexOf(id) !== -1;
 
   // Avoid a layout jump when reaching the last page with empty rows.
   const emptyRows =
@@ -210,9 +202,9 @@ export default function TransactionTable() {
 
   //取引データから表示件数分取得
   const visibleRows = React.useMemo(() => {
-    const sortedMonthlyTransactions = [...monthlyTransactions].sort((a, b) => {
-      return compareDesc(parseISO(a.date), parseISO(b.date));
-    });
+    const sortedMonthlyTransactions = [...monthlyTransactions].sort((a, b) =>
+      compareDesc(parseISO(a.date), parseISO(b.date))
+    );
 
     return sortedMonthlyTransactions.slice(
       page * rowsPerPage,
@@ -221,7 +213,6 @@ export default function TransactionTable() {
   }, [page, rowsPerPage, monthlyTransactions]);
 
   const { income, expense, balance } = financeCalculations(monthlyTransactions);
-  console.log({ income, expense, balance });
 
   return (
     <Box sx={{ width: "100%" }}>
@@ -231,19 +222,18 @@ export default function TransactionTable() {
           container
           sx={{ borderBottom: "1px solid rgba(224, 224, 224, 1)" }}
         >
-          {/* 収入 */}
-          <FinancialItem
-            title={"支出"}
-            value={expense}
-            color={theme.palette.expenseColor.main}
-          />
-          {/* 支出 */}
           <FinancialItem
             title={"収入"}
             value={income}
             color={theme.palette.incomeColor.main}
           />
-          {/* 残高 */}
+
+          <FinancialItem
+            title={"支出"}
+            value={expense}
+            color={theme.palette.expenseColor.main}
+          />
+
           <FinancialItem
             title={"残高"}
             value={balance}
@@ -257,21 +247,23 @@ export default function TransactionTable() {
           onDelete={handleDelete}
         />
 
-        {/* 取引一覧 */}
+        {/* 取引一覧*/}
         <TableContainer>
           <Table
             sx={{ minWidth: 750 }}
             aria-labelledby="tableTitle"
             size={"medium"}
           >
+            {/* テーブルヘッド */}
             <TransactionTableHead
               numSelected={selected.length}
               onSelectAllClick={handleSelectAllClick}
               rowCount={monthlyTransactions.length}
             />
+            {/* 取引内容 */}
             <TableBody>
               {visibleRows.map((transaction, index) => {
-                const isItemSelected = selected.includes(transaction.id);
+                const isItemSelected = isSelected(transaction.id);
                 const labelId = `enhanced-table-checkbox-${index}`;
 
                 return (
@@ -311,7 +303,6 @@ export default function TransactionTable() {
                     </TableCell>
                     <TableCell align="left">{transaction.amount}</TableCell>
                     <TableCell align="left">{transaction.content}</TableCell>
-                    {/* <TableCell align="right">{row.protein}</TableCell> */}
                   </TableRow>
                 );
               })}
@@ -339,10 +330,6 @@ export default function TransactionTable() {
           onRowsPerPageChange={handleChangeRowsPerPage}
         />
       </Paper>
-      {/* <FormControlLabel
-        control={<Switch checked={dense} onChange={handleChangeDense} />}
-        label="Dense padding"
-      /> */}
     </Box>
   );
 }
