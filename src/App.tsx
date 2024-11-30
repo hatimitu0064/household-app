@@ -7,22 +7,7 @@ import AppLayout from "./components/layout/AppLayout";
 import { ThemeProvider } from "@emotion/react";
 import { theme } from "./theme/theme";
 import { CssBaseline } from "@mui/material";
-import { useEffect, useState } from "react";
-import { Transaction } from "./types/index";
-import {
-  addDoc,
-  collection,
-  deleteDoc,
-  doc,
-  getDocs,
-  updateDoc,
-} from "firebase/firestore";
-import { db } from "./firebase";
-import { format } from "date-fns";
-import { formatMonth } from "./utils/formatting";
-import { Schema } from "./validations/schema";
 import { AppContextProvider } from "./context/AppContext";
-import { isFireStoreError } from "./utils/errorHandling";
 
 function App() {
   // const [transactions, setTransactions] = useState<Transaction[]>([]);

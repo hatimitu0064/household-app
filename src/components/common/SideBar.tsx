@@ -9,11 +9,9 @@ import {
   ListItemText,
   Toolbar,
 } from "@mui/material";
-import InboxIcon from "@mui/icons-material/MoveToInbox";
-import MailIcon from "@mui/icons-material/Mail";
 import HomeIcon from "@mui/icons-material/Home";
 import EqualizerIcon from "@mui/icons-material/Equalizer";
-import React, { CSSProperties } from "react";
+import { CSSProperties } from "react";
 import { NavLink } from "react-router-dom";
 
 interface SidebarProps {
@@ -33,7 +31,6 @@ interface menuItem {
 const SideBar = ({
   drawerWidth,
   mobileOpen,
-  handleDrawerToggle,
   handleDrawerTransitionEnd,
   handleDrawerClose,
 }: SidebarProps) => {

@@ -15,7 +15,6 @@ import Checkbox from "@mui/material/Checkbox";
 import IconButton from "@mui/material/IconButton";
 import Tooltip from "@mui/material/Tooltip";
 import DeleteIcon from "@mui/icons-material/Delete";
-import { Transaction } from "../types";
 import { financeCalculations } from "../utils/financeCalculations";
 import { Grid } from "@mui/material";
 import { formatCurrency } from "../utils/formatting";

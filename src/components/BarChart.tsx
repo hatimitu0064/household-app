@@ -1,4 +1,3 @@
-import React from "react";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -10,7 +9,6 @@ import {
   ChartData,
 } from "chart.js";
 import { Bar } from "react-chartjs-2";
-import { Transaction } from "../types";
 import { calculateDailyBalances } from "../utils/financeCalculations";
 import { Box, Typography, useTheme } from "@mui/material";
 import CircularProgress from "@mui/material/CircularProgress";

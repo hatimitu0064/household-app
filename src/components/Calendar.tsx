@@ -1,15 +1,14 @@
 import FullCalendar from "@fullcalendar/react";
-import React from "react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import jaLocale from "@fullcalendar/core/locales/ja";
 import "../calendar.css";
 import { DatesSetArg, EventContentArg } from "@fullcalendar/core/index.js";
 import { calculateDailyBalances } from "../utils/financeCalculations";
-import { Balance, CalendarContent, Transaction } from "../types";
+import { Balance, CalendarContent } from "../types";
 import { formatCurrency } from "../utils/formatting";
 import interactionPlugin, { DateClickArg } from "@fullcalendar/interaction";
 import { useTheme } from "@mui/material";
-import { isSameDay, isSameMonth } from "date-fns";
+import { isSameMonth } from "date-fns";
 import useMonthlyTransactions from "../hooks/useMonthlyTransactions";
 import { useAppContext } from "../context/AppContext";
 

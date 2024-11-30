@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import {
   Chart as ChartJS,
   ArcElement,
@@ -15,17 +15,14 @@ import {
   MenuItem,
   Select,
   SelectChangeEvent,
-  TextField,
   Typography,
   useTheme,
 } from "@mui/material";
 import {
   ExpenseCategory,
   IncomeCategory,
-  Transaction,
   TransactionType,
 } from "../types";
-import { theme } from "../theme/theme";
 import { useAppContext } from "../context/AppContext";
 import useMonthlyTransactions from "../hooks/useMonthlyTransactions";
 

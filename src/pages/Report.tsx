@@ -1,10 +1,8 @@
 import { Grid, Paper } from "@mui/material";
-import React from "react";
 import TransactionTable from "../components/TransactionTable";
 import BarChart from "../components/BarChart";
 import CategoryChart from "../components/CategoryChart";
 import MonthSelector from "../components/MonthSelector";
-import { Transaction } from "../types";
 
 // interface ReportProps {
 //   currentMonth: Date;

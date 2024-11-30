@@ -1,5 +1,4 @@
 import { Box, Button } from "@mui/material";
-import React from "react";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 // If you are using date-fns v2.x, please import `AdapterDateFns`
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFnsV3";
