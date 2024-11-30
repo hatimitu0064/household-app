@@ -3,9 +3,10 @@
     // "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.node.tsbuildinfo",
 		"tsBuildInfoFile": "./.tsbuildinfo",
     "target": "ES2022",
-    "lib": ["ES2023"],
+    "lib": ["es2020", "dom"],
     "module": "ESNext",
     "skipLibCheck": true,
+		"incremental": true,
 
     /* Bundler mode */
     "moduleResolution": "node",
