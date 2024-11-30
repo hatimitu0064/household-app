@@ -4,7 +4,7 @@ import MonthlySummary from "../components/MonthlySummary";
 import Calendar from "../components/Calendar";
 import TransactionMenu from "../components/TransactionMenu";
 import TransactionForm from "../components/TransactionForm";
-import { Transaction, TransactionType } from "../types";
+import { Transaction } from "../types";
 import { format, isSameDay, parseISO } from "date-fns";
 import { DateClickArg } from "@fullcalendar/interaction/index.js";
 import { useAppContext } from "../context/AppContext";
